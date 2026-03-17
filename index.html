@@ -85,12 +85,14 @@
       text-decoration: underline;
     }
 
-    .warning {
-      background: #fff8e1;
-      padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      border-left: 4px solid #ac8059;
+    .warning-inline {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: #f3f6f1;
+      color: #374151;
+      font-size: 14px;
     }
 
   </style>
@@ -118,11 +120,13 @@
         <input type="file" id="currentFile" />
       </div>
 
-      <button class="button" onclick="runSync()">Run Full Sync</button>
+      <button class="button" onclick="runSync()" style="margin-top:10px;">
+        Run Full Sync
+      </button>
 
-        <div class="warning">
-      ✔ Designed for apartment / resident syncing
-    </div>
+        <div class="warning-inline">
+          ✔ Designed for apartment / resident syncing
+        </div>
       
       <p id="status"></p>
 
