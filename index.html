@@ -1,38 +1,139 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>BusinessTextBox Contact Sync</title>
+  <title>BusinessTextBox Resident Sync</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f7f9f6;
+      color: #1f2937;
+    }
+
+    .header {
+      background: white;
+      border-bottom: 4px solid #8fc84b;
+      padding: 20px 30px;
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .container {
+      padding: 30px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      margin-bottom: 25px;
+    }
+
+    .button {
+      background: #8fc84b;
+      color: white;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .button:hover {
+      background: #6ea63a;
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+    }
+
+    .stat {
+      background: #f3f6f1;
+      padding: 15px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .stat-title {
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    .stat-value {
+      font-size: 22px;
+      font-weight: bold;
+      margin-top: 5px;
+    }
+
+    .download a {
+      display: inline-block;
+      margin-right: 15px;
+      margin-top: 10px;
+      color: #8fc84b;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .download a:hover {
+      text-decoration: underline;
+    }
+
+    .warning {
+      background: #fff8e1;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      border-left: 4px solid #ac8059;
+    }
+
+  </style>
 </head>
 
-<body style="font-family: Arial; padding: 30px; background: #f5f5f5;">
+<body>
 
-  <h1>BusinessTextBox Contact Sync</h1>
-  <p>Upload your PMS file and current TextBox export to generate a single full sync import.</p>
-
-  <div style="background: white; padding: 20px; border-radius: 10px; max-width: 500px;">
-
-    <div style="margin-bottom: 15px;">
-      <label><b>New PMS Export</b></label><br/>
-      <input type="file" id="pmsFile" />
-    </div>
-
-    <div style="margin-bottom: 15px;">
-      <label><b>Current TextBox Export</b></label><br/>
-      <input type="file" id="currentFile" />
-    </div>
-
-    <button onclick="runSync()" style="padding: 10px 15px; background: black; color: white; border: none;">
-      Run Full Sync
-    </button>
-
-    <p id="status" style="margin-top: 15px;"></p>
+  <div class="header">
+    BusinessTextBox Resident Sync
   </div>
 
-  <div id="results" style="margin-top: 30px;"></div>
+  <div class="container">
+
+    <div class="warning">
+      ⚠️ Designed for apartment / resident syncing only.
+    </div>
+
+    <div class="card">
+
+      <h2>Upload Files</h2>
+
+      <div style="margin-bottom: 15px;">
+        <label><b>New PMS Export</b></label><br/>
+        <input type="file" id="pmsFile" />
+      </div>
+
+      <div style="margin-bottom: 15px;">
+        <label><b>Current TextBox Export</b></label><br/>
+        <input type="file" id="currentFile" />
+      </div>
+
+      <button class="button" onclick="runSync()">Run Full Sync</button>
+
+      <p id="status"></p>
+
+    </div>
+
+    <div id="results"></div>
+
+  </div>
 
   <script>
-    const API_BASE = "https://textbox-sync-backend.onrender.com";
+    cconst API_BASE = "https://textbox-sync-backend.onrender.com";
 
     async function runSync() {
       const pmsFile = document.getElementById("pmsFile").files[0];
@@ -67,18 +168,53 @@
         status.innerText = "Done";
 
         results.innerHTML = `
-          <h3>Results</h3>
-          <p>Valid Contacts: ${data.totals.validContacts}</p>
-          <p>Adds: ${data.totals.adds}</p>
-          <p>Updates: ${data.totals.updates}</p>
-          <p>Removals / Past Residents: ${data.totals.removals}</p>
+          <div class="card">
 
-          <h3>Download</h3>
-          <a href="${API_BASE + data.downloads.import}" target="_blank">Download Full Sync File</a><br/>
-          <a href="${API_BASE + data.downloads.summary}" target="_blank">Download Summary</a>
+            <h2>Results</h2>
 
-          <h3>Import Instructions</h3>
-          <p>Import the Full Sync File into TextBox. Current residents will be updated from the PMS file. Past residents will remain as contacts, but Contact2 and Groups will be blank.</p>
+            <div class="results-grid">
+              <div class="stat">
+                <div class="stat-title">Valid</div>
+                <div class="stat-value">${data.totals.validContacts}</div>
+              </div>
+
+              <div class="stat">
+                <div class="stat-title">Adds</div>
+                <div class="stat-value">${data.totals.adds}</div>
+              </div>
+
+              <div class="stat">
+                <div class="stat-title">Updates</div>
+                <div class="stat-value">${data.totals.updates}</div>
+              </div>
+
+              <div class="stat">
+                <div class="stat-title">Past Residents</div>
+                <div class="stat-value">${data.totals.removals}</div>
+              </div>
+            </div>
+
+            <div class="download">
+              <h3>Download</h3>
+              <a href="${API_BASE + data.downloads.import}" target="_blank">
+                Download Full Sync Import File
+              </a><br/>
+              <a href="${API_BASE + data.downloads.summary}" target="_blank">
+                Download Summary
+              </a>
+            </div>
+
+            <div style="margin-top:20px;">
+              <h3>Instructions</h3>
+              <p>
+                Upload the Full Sync Import File into TextBox.<br/><br/>
+                • Current residents will be updated<br/>
+                • Past residents remain as contacts<br/>
+                • Contact2 and Groups are cleared for past residents
+              </p>
+            </div>
+
+          </div>
         `;
 
       } catch (err) {
