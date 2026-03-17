@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>BusinessTextBox Contact Sync</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+
+<body style="font-family: Arial; padding: 30px; background: #f5f5f5;">
+
+  <h1>BusinessTextBox Contact Sync</h1>
+  <p>Upload your PMS file and current TextBox export to generate a clean import.</p>
+
+  <div style="background: white; padding: 20px; border-radius: 10px; max-width: 500px;">
+    
+    <div style="margin-bottom: 15px;">
+      <label><b>New PMS Export</b></label><br/>
+      <input type="file" id="pmsFile" />
+    </div>
+
+    <div style="margin-bottom: 15px;">
+      <label><b>Current TextBox Export</b></label><br/>
+      <input type="file" id="currentFile" />
+    </div>
+
+    <button onclick="runSync()" style="padding: 10px 15px; background: black; color: white; border: none;">
+      Run Sync
+    </button>
+
+    <p id="status" style="margin-top: 15px;"></p>
+  </div>
+
+  <div id="results" style="margin-top: 30px;"></div>
+
+  <script>
+    const API_BASE = "https://textbox-sync-backend.onrender.com";
+    
+    async function runSync() {
+      const pmsFile = document.getElementById("pmsFile").files[0];
+      const currentFile = document.getElementById("currentFile").files[0];
+      const status = document.getElementById("status");
+      const results = document.getElementById("results");
+
+      if (!pmsFile) {
+        alert("Please upload PMS file");
+        return;
+      }
+
+      status.innerText = "Processing...";
+      results.innerHTML = "";
+
+      const formData = new FormData();
+      formData.append("property_key", "default_letter");
+      formData.append("pms_file", pmsFile);
+
+      if (currentFile) {
+        formData.append("current_contacts_file", currentFile);
+      }
+
+      try {
+        const res = await fetch(API_BASE + "/sync/preview", {
+          method: "POST",
+          body: formData
+        });
+
+        const data = await res.json();
+
+        status.innerText = "Done";
+
+        results.innerHTML = `
+          <h3>Results</h3>
+          <p>Valid Contacts: ${data.totals.validContacts}</p>
+          <p>Adds: ${data.totals.adds}</p>
+          <p>Updates: ${data.totals.updates}</p>
+          <p>Removals: ${data.totals.removals}</p>
+
+          <h3>Downloads</h3>
+          <a href="${API_BASE + data.downloads.import}" target="_blank">Download Import</a><br/>
+          <a href="${API_BASE + data.downloads.removals}" target="_blank">Download Removals</a><br/>
+          <a href="${API_BASE + data.downloads.summary}" target="_blank">Download Summary</a>
+        `;
+
+      } catch (err) {
+        status.innerText = "Error";
+        console.error(err);
+      }
+    }
+  </script>
+
+</body>
+</html>
