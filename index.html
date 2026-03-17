@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>BusinessTextBox Resident Sync</title>
+  <title>Business TextBox Resident Sync Tool</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root {
@@ -275,17 +275,18 @@
   </style>
 </head>
 <body>
-  <div class="header">BusinessTextBox Resident Sync</div>
+  <div class="header">Business TextBox Resident Sync Tool</div>
 
   <div class="container">
     <div class="card">
-      <h2 style="font-size: 28px; margin-bottom: 22px;">Upload Files</h2>
+      <h2 style="font-size: 28px; margin-bottom: 22px;"<h2>Upload Your Files</h2>
+        <p class="muted">Upload your latest PMS export and current TextBox export to generate a clean, up-to-date contact list.</p>
 
       <div class="upload-grid">
         <div class="upload-box" id="pmsDropZone">
-          <label class="upload-label">New PMS Export</label>
+          <label class="upload-label">New PMS Export (.xlsx or .csv)</label>
           <div class="upload-subtext">
-            Drop your latest resident export here, or browse to upload an Excel or CSV file.
+            Upload your latest resident export from your property management system.
           </div>
 
           <div class="file-actions">
@@ -300,9 +301,9 @@
         </div>
 
         <div class="upload-box" id="currentDropZone">
-          <label class="upload-label">Current TextBox Export</label>
+          <label class="upload-label">Current TextBox Export (.xlsx or .csv)</label>
           <div class="upload-subtext">
-            Upload the current export from TextBox so past residents can be kept as contacts and cleared from units and groups.
+            Upload your current TextBox contacts export to identify past residents and preserve contact history.
           </div>
 
           <div class="file-actions">
@@ -461,40 +462,48 @@
 
             <div class="results-grid">
               <div class="stat">
-                <div class="stat-title">Valid Contacts</div>
+                <div class="stat-title">Total Valid Contacts</div>
                 <div class="stat-value">${data.totals.validContacts}</div>
               </div>
 
               <div class="stat">
-                <div class="stat-title">Adds</div>
+                <div class="stat-title">New Residents</div>
                 <div class="stat-value">${data.totals.adds}</div>
               </div>
 
               <div class="stat">
-                <div class="stat-title">Updates</div>
+                <div class="stat-title">Updated Residents</div>
                 <div class="stat-value">${data.totals.updates}</div>
               </div>
 
               <div class="stat">
-                <div class="stat-title">Past Residents</div>
+                <div class="stat-title">Past Residents (Cleared)</div>
                 <div class="stat-value">${data.totals.removals}</div>
               </div>
             </div>
 
             <div class="download" style="margin-top:22px;">
-              <h3>Downloads</h3>
-              <a href="${API_BASE + data.downloads.import}" target="_blank">Download Full Sync Import File</a>
+              <h3>Download Your Files</h3>
+              <a href="${API_BASE + data.downloads.import}" target="_blank">Download Import File (Upload to TextBox)</a>
               <a href="${API_BASE + data.downloads.summary}" target="_blank">Download Summary</a>
             </div>
 
             <div style="margin-top:22px;">
-              <h3>Instructions</h3>
+             <h3>How It Works</h3>
               <p style="line-height:1.6;">
-                Upload the Full Sync Import File into TextBox.<br><br>
-                • Current residents will be updated<br>
-                • Past residents remain as contacts<br>
-                • Contact2 and Groups are cleared for past residents
-              </p>
+              1. Upload your new PMS export and current TextBox export<br>
+              2. Click <b>Run Full Sync</b><br>
+              3. Download the <b>Full Sync Import File</b><br>
+              4. Upload that file into TextBox<br><br>
+
+              <b>What happens:</b><br>
+              • Current residents are updated from your PMS<br>
+              • New residents are added<br>
+              • Past residents remain as contacts<br>
+              • Contact2 (unit) and Groups are cleared for past residents<br><br>
+
+              This ensures your messaging groups stay accurate while preserving conversation history.
+            </p>
             </div>
           </div>
         `;
