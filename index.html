@@ -8,10 +8,10 @@
 <body style="font-family: Arial; padding: 30px; background: #f5f5f5;">
 
   <h1>BusinessTextBox Contact Sync</h1>
-  <p>Upload your PMS file and current TextBox export to generate a clean import.</p>
+  <p>Upload your PMS file and current TextBox export to generate a single full sync import.</p>
 
   <div style="background: white; padding: 20px; border-radius: 10px; max-width: 500px;">
-    
+
     <div style="margin-bottom: 15px;">
       <label><b>New PMS Export</b></label><br/>
       <input type="file" id="pmsFile" />
@@ -23,7 +23,7 @@
     </div>
 
     <button onclick="runSync()" style="padding: 10px 15px; background: black; color: white; border: none;">
-      Run Sync
+      Run Full Sync
     </button>
 
     <p id="status" style="margin-top: 15px;"></p>
@@ -33,7 +33,7 @@
 
   <script>
     const API_BASE = "https://textbox-sync-backend.onrender.com";
-    
+
     async function runSync() {
       const pmsFile = document.getElementById("pmsFile").files[0];
       const currentFile = document.getElementById("currentFile").files[0];
@@ -71,12 +71,14 @@
           <p>Valid Contacts: ${data.totals.validContacts}</p>
           <p>Adds: ${data.totals.adds}</p>
           <p>Updates: ${data.totals.updates}</p>
-          <p>Removals: ${data.totals.removals}</p>
+          <p>Removals / Past Residents: ${data.totals.removals}</p>
 
-          <h3>Downloads</h3>
-          <a href="${API_BASE + data.downloads.import}" target="_blank">Download Import</a><br/>
-          <a href="${API_BASE + data.downloads.removals}" target="_blank">Download Removals</a><br/>
+          <h3>Download</h3>
+          <a href="${API_BASE + data.downloads.import}" target="_blank">Download Full Sync File</a><br/>
           <a href="${API_BASE + data.downloads.summary}" target="_blank">Download Summary</a>
+
+          <h3>Import Instructions</h3>
+          <p>Import the Full Sync File into TextBox. Current residents will be updated from the PMS file. Past residents will remain as contacts, but Contact2 and Groups will be blank.</p>
         `;
 
       } catch (err) {
