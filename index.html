@@ -3,80 +3,233 @@
 <head>
   <title>BusinessTextBox Resident Sync</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
   <style>
+    :root {
+      --primary: #8fc84b;
+      --primary-dark: #6ea63a;
+      --secondary: #ac8059;
+      --bg: #f7f9f6;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --line: #d7e2cf;
+      --soft: #f3f6f1;
+      --soft-2: #eef4e8;
+    }
+
+    * { box-sizing: border-box; }
+
     body {
       font-family: Arial, sans-serif;
       margin: 0;
-      background: #f7f9f6;
-      color: #1f2937;
+      background: var(--bg);
+      color: var(--text);
     }
 
     .header {
       background: white;
-      border-bottom: 4px solid #8fc84b;
-      padding: 20px 30px;
+      border-bottom: 4px solid var(--primary);
+      padding: 18px 30px;
       font-size: 22px;
       font-weight: bold;
     }
 
     .container {
       padding: 30px;
-      max-width: 900px;
+      max-width: 980px;
       margin: auto;
     }
 
     .card {
+      background: var(--card);
+      padding: 34px;
+      border-radius: 18px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+      margin-bottom: 24px;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 18px;
+    }
+
+    .upload-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .upload-box {
+      border: 2px dashed var(--line);
+      background: var(--soft);
+      border-radius: 14px;
+      padding: 18px;
+      transition: 0.2s ease;
+      position: relative;
+      min-height: 160px;
+    }
+
+    .upload-box.dragover {
+      border-color: var(--primary);
+      background: var(--soft-2);
+      transform: translateY(-1px);
+    }
+
+    .upload-label {
+      font-size: 15px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .upload-subtext {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.4;
+      margin-bottom: 16px;
+    }
+
+    .file-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .file-button {
       background: white;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-      margin-bottom: 25px;
+      border: 1px solid #cbd5e1;
+      padding: 10px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      color: var(--text);
+    }
+
+    .file-button:hover {
+      border-color: var(--primary);
+    }
+
+    .hidden-input {
+      display: none;
+    }
+
+    .file-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: white;
+      border: 1px solid #d1d5db;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 14px;
+      max-width: 100%;
+    }
+
+    .file-name {
+      display: inline-block;
+      max-width: 280px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      vertical-align: bottom;
+    }
+
+    .clear-btn {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 16px;
+      line-height: 1;
+      padding: 0;
+    }
+
+    .clear-btn:hover {
+      color: #111827;
+    }
+
+    .actions {
+      margin-top: 22px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
     }
 
     .button {
-      background: #8fc84b;
+      background: var(--primary);
       color: white;
       border: none;
-      padding: 12px 18px;
-      border-radius: 8px;
+      padding: 14px 20px;
+      border-radius: 12px;
       cursor: pointer;
       font-weight: bold;
+      font-size: 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 175px;
+      justify-content: center;
     }
 
     .button:hover {
-      background: #6ea63a;
+      background: var(--primary-dark);
+    }
+
+    .button:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .hint-inline {
+      display: inline-block;
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: var(--soft);
+      color: #374151;
+      font-size: 14px;
+    }
+
+    .status {
+      min-height: 22px;
+      color: var(--muted);
+      font-size: 14px;
     }
 
     .results-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
       gap: 15px;
+      margin-top: 10px;
     }
 
     .stat {
-      background: #f3f6f1;
-      padding: 15px;
-      border-radius: 10px;
+      background: var(--soft);
+      padding: 16px;
+      border-radius: 12px;
       text-align: center;
     }
 
     .stat-title {
       font-size: 13px;
-      color: #6b7280;
+      color: var(--muted);
     }
 
     .stat-value {
-      font-size: 22px;
+      font-size: 24px;
       font-weight: bold;
-      margin-top: 5px;
+      margin-top: 6px;
     }
 
     .download a {
       display: inline-block;
-      margin-right: 15px;
+      margin-right: 16px;
       margin-top: 10px;
-      color: #8fc84b;
+      color: var(--primary-dark);
       font-weight: bold;
       text-decoration: none;
     }
@@ -85,72 +238,198 @@
       text-decoration: underline;
     }
 
-    .warning-inline {
-      display: inline-block;
-      margin-top: 12px;
-      padding: 8px 12px;
-      border-radius: 8px;
-      background: #f3f6f1;
-      color: #374151;
-      font-size: 14px;
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255,255,255,0.45);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      display: none;
     }
 
+    .button.loading .spinner {
+      display: inline-block;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .drop-note {
+      margin-top: 12px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    @media (max-width: 760px) {
+      .container { padding: 18px; }
+      .card { padding: 22px; }
+      .upload-grid { grid-template-columns: 1fr; }
+      .file-name { max-width: 180px; }
+    }
   </style>
 </head>
-
 <body>
-
-  <div class="header">
-    BusinessTextBox Resident Sync
-  </div>
+  <div class="header">BusinessTextBox Resident Sync</div>
 
   <div class="container">
-
     <div class="card">
+      <h2 style="font-size: 28px; margin-bottom: 22px;">Upload Files</h2>
 
-      <h2>Upload Files</h2>
+      <div class="upload-grid">
+        <div class="upload-box" id="pmsDropZone">
+          <label class="upload-label">New PMS Export</label>
+          <div class="upload-subtext">
+            Drop your latest resident export here, or browse to upload an Excel or CSV file.
+          </div>
 
-      <div style="margin-bottom: 15px;">
-        <label><b>New PMS Export</b></label><br/>
-        <input type="file" id="pmsFile" />
-      </div>
+          <div class="file-actions">
+            <button type="button" class="file-button" onclick="document.getElementById('pmsFile').click()">
+              Choose File
+            </button>
+            <input class="hidden-input" type="file" id="pmsFile" accept=".xlsx,.xls,.csv" />
+            <div id="pmsFileInfo" class="muted">No file selected</div>
+          </div>
 
-      <div style="margin-bottom: 15px;">
-        <label><b>Current TextBox Export</b></label><br/>
-        <input type="file" id="currentFile" />
-      </div>
-
-      <button class="button" onclick="runSync()" style="margin-top:10px;">
-        Run Full Sync
-      </button>
-
-        <div class="warning-inline">
-          ✔ Designed for apartment / resident syncing
+          <div class="drop-note">Accepted: .xlsx, .xls, .csv</div>
         </div>
-      
-      <p id="status"></p>
 
+        <div class="upload-box" id="currentDropZone">
+          <label class="upload-label">Current TextBox Export</label>
+          <div class="upload-subtext">
+            Upload the current export from TextBox so past residents can be kept as contacts and cleared from units and groups.
+          </div>
+
+          <div class="file-actions">
+            <button type="button" class="file-button" onclick="document.getElementById('currentFile').click()">
+              Choose File
+            </button>
+            <input class="hidden-input" type="file" id="currentFile" accept=".xlsx,.xls,.csv" />
+            <div id="currentFileInfo" class="muted">No file selected</div>
+          </div>
+
+          <div class="drop-note">Accepted: .xlsx, .xls, .csv</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="button" id="runButton" onclick="runSync()">
+          <span class="spinner" id="spinner"></span>
+          <span id="buttonText">Run Full Sync</span>
+        </button>
+
+        <div class="hint-inline">✔ Designed for apartment / resident syncing</div>
+      </div>
+
+      <p id="status" class="status"></p>
     </div>
 
     <div id="results"></div>
-
   </div>
 
   <script>
-    cconst API_BASE = "https://textbox-sync-backend.onrender.com";
+    const API_BASE = "PASTE_YOUR_RENDER_URL_HERE";
 
-    async function runSync() {
-      const pmsFile = document.getElementById("pmsFile").files[0];
-      const currentFile = document.getElementById("currentFile").files[0];
-      const status = document.getElementById("status");
-      const results = document.getElementById("results");
+    const pmsFileInput = document.getElementById("pmsFile");
+    const currentFileInput = document.getElementById("currentFile");
+    const pmsFileInfo = document.getElementById("pmsFileInfo");
+    const currentFileInfo = document.getElementById("currentFileInfo");
+    const pmsDropZone = document.getElementById("pmsDropZone");
+    const currentDropZone = document.getElementById("currentDropZone");
+    const runButton = document.getElementById("runButton");
+    const buttonText = document.getElementById("buttonText");
+    const status = document.getElementById("status");
+    const results = document.getElementById("results");
 
-      if (!pmsFile) {
-        alert("Please upload PMS file");
+    function renderFileInfo(file, targetEl, inputEl) {
+      if (!file) {
+        targetEl.className = "muted";
+        targetEl.innerHTML = "No file selected";
         return;
       }
 
-      status.innerText = "Processing...";
+      targetEl.className = "";
+      targetEl.innerHTML = `
+        <span class="file-pill">
+          <span class="file-name" title="${file.name}">${file.name}</span>
+          <button type="button" class="clear-btn" aria-label="Clear file" onclick="clearFile('${inputEl.id}')">&times;</button>
+        </span>
+      `;
+    }
+
+    function clearFile(inputId) {
+      const input = document.getElementById(inputId);
+      input.value = "";
+      if (inputId === "pmsFile") renderFileInfo(null, pmsFileInfo, pmsFileInput);
+      if (inputId === "currentFile") renderFileInfo(null, currentFileInfo, currentFileInput);
+    }
+
+    pmsFileInput.addEventListener("change", () => {
+      renderFileInfo(pmsFileInput.files[0], pmsFileInfo, pmsFileInput);
+    });
+
+    currentFileInput.addEventListener("change", () => {
+      renderFileInfo(currentFileInput.files[0], currentFileInfo, currentFileInput);
+    });
+
+    function wireDropZone(zoneEl, inputEl, infoEl) {
+      ["dragenter", "dragover"].forEach(eventName => {
+        zoneEl.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          zoneEl.classList.add("dragover");
+        });
+      });
+
+      ["dragleave", "drop"].forEach(eventName => {
+        zoneEl.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          zoneEl.classList.remove("dragover");
+        });
+      });
+
+      zoneEl.addEventListener("drop", (e) => {
+        const files = e.dataTransfer.files;
+        if (files && files.length > 0) {
+          const dt = new DataTransfer();
+          dt.items.add(files[0]);
+          inputEl.files = dt.files;
+          renderFileInfo(files[0], infoEl, inputEl);
+        }
+      });
+    }
+
+    wireDropZone(pmsDropZone, pmsFileInput, pmsFileInfo);
+    wireDropZone(currentDropZone, currentFileInput, currentFileInfo);
+
+    function setLoading(isLoading) {
+      runButton.disabled = isLoading;
+      if (isLoading) {
+        runButton.classList.add("loading");
+        buttonText.textContent = "Processing...";
+      } else {
+        runButton.classList.remove("loading");
+        buttonText.textContent = "Run Full Sync";
+      }
+    }
+
+    async function runSync() {
+      const pmsFile = pmsFileInput.files[0];
+      const currentFile = currentFileInput.files[0];
+
+      if (!pmsFile) {
+        alert("Please upload the new PMS export.");
+        return;
+      }
+
+      setLoading(true);
+      status.innerText = "Uploading and processing files...";
       results.innerHTML = "";
 
       const formData = new FormData();
@@ -167,18 +446,22 @@
           body: formData
         });
 
+        if (!res.ok) {
+          const text = await res.text();
+          throw new Error(text || "Request failed");
+        }
+
         const data = await res.json();
 
         status.innerText = "Done";
 
         results.innerHTML = `
           <div class="card">
-
-            <h2>Results</h2>
+            <h2 style="margin-bottom:18px;">Results</h2>
 
             <div class="results-grid">
               <div class="stat">
-                <div class="stat-title">Valid</div>
+                <div class="stat-title">Valid Contacts</div>
                 <div class="stat-value">${data.totals.validContacts}</div>
               </div>
 
@@ -198,35 +481,30 @@
               </div>
             </div>
 
-            <div class="download">
-              <h3>Download</h3>
-              <a href="${API_BASE + data.downloads.import}" target="_blank">
-                Download Full Sync Import File
-              </a><br/>
-              <a href="${API_BASE + data.downloads.summary}" target="_blank">
-                Download Summary
-              </a>
+            <div class="download" style="margin-top:22px;">
+              <h3>Downloads</h3>
+              <a href="${API_BASE + data.downloads.import}" target="_blank">Download Full Sync Import File</a>
+              <a href="${API_BASE + data.downloads.summary}" target="_blank">Download Summary</a>
             </div>
 
-            <div style="margin-top:20px;">
+            <div style="margin-top:22px;">
               <h3>Instructions</h3>
-              <p>
-                Upload the Full Sync Import File into TextBox.<br/><br/>
-                • Current residents will be updated<br/>
-                • Past residents remain as contacts<br/>
+              <p style="line-height:1.6;">
+                Upload the Full Sync Import File into TextBox.<br><br>
+                • Current residents will be updated<br>
+                • Past residents remain as contacts<br>
                 • Contact2 and Groups are cleared for past residents
               </p>
             </div>
-
           </div>
         `;
-
       } catch (err) {
-        status.innerText = "Error";
         console.error(err);
+        status.innerText = "There was an error processing the files.";
+      } finally {
+        setLoading(false);
       }
     }
   </script>
-
 </body>
 </html>
